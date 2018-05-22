@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audio</title>
+    <link rel="stylesheet" href="./ui.css">
+    <script src="./js/plugin/jquery.js"></script>
+    <script src="./js/common/ui/Select.js"></script>
+    <script src="./js/common/ui/Follow.js"></script>
+    <script src="./js/common/ui/Tips.js"></script>
+    <script src="./js/common/ui/Range.js"></script>
+</head>
+<body>
+<div>
+    <span>声音选择：</span>
+    <select id="voice">
+        <option>Google Deutsch</option>
+        <option>Google US English</option>
+        <option>Google UK English Female</option>
+        <option selected>Google UK English Male</option>
+        <option>Google 日本語</option>
+        <option>Google 普通话（中国大陆）</option>
+        <option>Google 國語（臺灣）</option>
+    </select>
+</div>
+<div>
+    <span>音量（0-1）：</span><input type="range" id="volRange" class="ui-range-input" value="1" min="0" max="1" step="0.1">
+</div>
+<div>
+    <span>速率（1-10）：</span><input type="range" id="rateRange" class="ui-range-input" value="1" min="0" max="10" step="1">
+</div>
+<div>
+    <span>音调（0-2）：</span><input type="range" id="pitchRange" class="ui-range-input" value="1" min="0" max="2" step="1">
+</div>
+<div>
+    <span>语音文字：</span><textarea id="text" class="ui-textarea">我王境泽就算饿死，死外面，也不会吃你家一点东西的。真香！</textarea>
+</div>
+<div>
+    <span>语言选择：</span>
+    <select id="lang">
+        <option>zh</option>
+        <option>en</option>
+        <option>ja</option>
+    </select>
+</div>
+<a id="say" href="javascript:" class="ui-button" role="button">发声</a>
+<script>
+  $('select').selectMatch();
+  $("#volRange").range();
+  $("#rateRange").range();
+  $("#pitchRange").range();
+
+
+  $("#say").click(function () {
+      var msg = new SpeechSynthesisUtterance();
+
+      msg.voice = $("voice").val(); //
+      msg.voiceURI = 'native';
+      msg.volume = $("#volRange").val(); // 0 to 1
+      msg.rate = $("#rateRange").val(); // 0.1 to 10
+      msg.pitch = $("#pitchRange").val(); //0 to 2
+      msg.text = $("#text").val();
+      msg.lang = $("#lang").val();
+
+      speechSynthesis.speak(msg);
+      msg.onend = function(e) {
+          console.log('Finished in ' + event.elapsedTime + ' seconds.');
+      };
+  });
+
+  console.log(speechSynthesis.getVoices())
+  window.speechSynthesis.getVoices().forEach(function(voice) {
+    console.log(voice.name, voice.default ? '(default)' :'');
+  });
+</script>
+</body>
+</html>
